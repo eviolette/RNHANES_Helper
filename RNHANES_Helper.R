@@ -101,18 +101,24 @@ nhanes.merg.data <- function(var.list,
       }
     }
     
-    merg <- reduce(df.list, full_join, by = "SEQN"); # reduce the list of dataframes into a single dataframe, by ID (SEQN)
+    merg <- NULL
+    
+    if (length(df.list) != 0) {
+      merg <- reduce(df.list, full_join, by = "SEQN"); # reduce the list of dataframes into a single dataframe, by ID (SEQN)
+      
+      
+      if (na.rm) merg <- na.omit(merg) # if removal of NAs specified, do so
+      
+      ID <- merg$SEQN
+      
+      merg$SEQN <- NULL
+      
+      colnames(merg) <- name.list # rename columns based on function input
+      
+      merg <- cbind(merg, ID, period)
+    }
     
     
-    if (na.rm) merg <- na.omit(merg) # if removal of NAs specified, do so
-    
-    ID <- merg$SEQN
-    
-    merg$SEQN <- NULL
-    
-    colnames(merg) <- name.list # rename columns based on function input
-    
-    merg <- cbind(merg, ID, period)
     
     final.df <- rbind(final.df, merg) # combine this final dataframe with the previous time period(s)' final dataframe.
   }
