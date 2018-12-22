@@ -1,3 +1,12 @@
+
+source("check_packages.R")
+# Usage example
+packages<-c("NHANES", "RNHANES", "dplyr", "tidyverse")
+check.packages(packages)
+
+files <- nhanes_data_files()
+variables <- nhanes_variables()
+
 remove.outliers.df <- function(df, colrange) {
   for (i in colrange) {
     qnt <- quantile(df[,i], probs=c(.25, .75), na.rm = T)
