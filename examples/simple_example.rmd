@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       cache = TRUE,
                       message = FALSE)
 source("../RNHANES_Helper.R")
@@ -19,7 +19,7 @@ I'll begin by searching through the variables for both:
 
 ```{r find-vars}
 nhanes_search(variables, "Estradiol")
-unique(nhanes_search(variables, "Nicotine")$variable_description)
+#unique(nhanes_search(variables, "Nicotine"))
 ```
 
 I find that the variable name for participant serum estradiol concentration is SSSE2; the variable name for the participant consuming nicotine in the past five days is SMQ680.
@@ -32,10 +32,10 @@ Now I can use the nhanes.merg.data() function to find all datasets that contain 
 - Remove NA values: TRUE
 - Remove outliers for certain variables: c(FALSE, TRUE)
 
-```{r}
+```{r merg-data}
 df.test <- nhanes.merg.data(c("SMQ680", "SSSE2"), 
                       "all",  
-                      c("Days.Nicotine", "Estradiol"),
+                      c("Smoked.Nicotine", "Estradiol"),
                       TRUE,
                       c(FALSE, TRUE))
 
@@ -45,12 +45,14 @@ summary(df.test)
 From here any sort of analysis can be done.
 
 ```{r}
-df.test <- df.test[df.test$Estradiol > 0 & df.test$Days.Nicotine <= 5,]
+df.test <- df.test[df.test$Estradiol > 0 & df.test$Smoked.Nicotine <= 5,]
 
-df.test$Days.Nicotine <- as.factor(df.test$Days.Nicotine)
+df.test$Smoked.Nicotine <- as.factor(df.test$Smoked.Nicotine)
 
-levels(df.test$Days.Nicotine) <- c("Yes", "No")
+levels(df.test$Smoked.Nicotine) <- c("Yes", "No")
 
-ggplot(df.test, aes(x = Days.Nicotine, y = Estradiol)) + geom_boxplot()
+ggplot(df.test, aes(x = Smoked.Nicotine, y = Estradiol)) + 
+  geom_boxplot() + 
+  labs(y = "Estradiol (pg/mL)", x = "Consumed Nicotine in the Last Five Days?")
 ```
 
