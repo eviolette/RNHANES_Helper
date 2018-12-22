@@ -1,5 +1,11 @@
 
-source("check_packages.R")
+# simple function to check packages. Takes list of packages, installs them if necessary, then requires them
+check.packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
 
 # import required packages
 packages <- c("NHANES", "RNHANES", "dplyr", "tidyverse")
