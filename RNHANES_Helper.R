@@ -2,7 +2,7 @@
 source("check_packages.R")
 
 # import required packages
-packages<-c("NHANES", "RNHANES", "dplyr", "tidyverse")
+packages <- c("NHANES", "RNHANES", "dplyr", "tidyverse")
 check.packages(packages)
 
 # get list of files and variables from RNHANES
